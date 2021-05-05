@@ -1,6 +1,4 @@
 # Eclipse
-.classpath
-.project
 .settings/
  
 # Intellij
@@ -13,4 +11,3 @@
  
 # Maven
 log/
-target/
