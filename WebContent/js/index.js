@@ -1,5 +1,5 @@
 var Peer = require("simple-peer");
-var ws = new WebSocket("ws://localhost:8080/webRTC/signal");
+var ws = new WebSocket("ws://window.location.hostname/signal");
 var stream = navigator.mediaDevices.getUserMedia({ video: true, audio: false });
 
 
