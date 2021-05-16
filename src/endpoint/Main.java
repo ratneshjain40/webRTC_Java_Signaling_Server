@@ -25,6 +25,7 @@ public class Main {
 
 	@OnOpen
 	public void whenOpening(Session session) throws IOException, EncodeException {
+		session.setMaxIdleTimeout(30000);
 		System.out.println("Open! " + session.getId());
 	}
 
