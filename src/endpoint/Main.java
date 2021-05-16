@@ -127,6 +127,11 @@ public class Main {
 				System.out.println(room_id + " user not in room !");
 			}
 		}
+		
+		if (action.equals("Active")) {
+			JSONObject res_obj = session_manager.create_response("Stay Active");
+			session.getBasicRemote().sendText(res_obj.toString());
+		}
 
 	}
 
