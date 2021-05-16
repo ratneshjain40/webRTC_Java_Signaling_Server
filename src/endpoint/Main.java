@@ -25,7 +25,7 @@ public class Main {
 
 	@OnOpen
 	public void whenOpening(Session session) throws IOException, EncodeException {
-		session.setMaxIdleTimeout(3000000);
+		session.setMaxIdleTimeout(30000);
 		System.out.println("Open! " + session.getId());
 	}
 
@@ -36,7 +36,11 @@ public class Main {
 
 		String action = client_obj.getString("action");
 		String room_id = client_obj.getString("room_id");
-
+		
+		if (action.equals("Active")) {
+			System.out.println(session.getId() + " is active !");
+		}
+		
 		if (action.equals("Create Room")) {
 
 			JSONObject data_obj = client_obj.getJSONObject("data");
@@ -115,16 +119,19 @@ public class Main {
 		}
 
 		if (action.equals("Leave Room")) {
-			if (session_manager.is_in_room(room_id, session)) {
-				String user = (String) session.getUserProperties().get("username");
-				if (session_manager.remove_user_from_room(room_id, session)) {
-					System.out.println(user + " Left !");
-				}
-			} else {
-				JSONObject res_obj = session_manager.create_response("user not in room");
+			if (session_manager.room_exists(room_id)) {
 
-				session.getBasicRemote().sendText(res_obj.toString());
-				System.out.println(room_id + " user not in room !");
+				if (session_manager.is_in_room(room_id, session)) {
+					String user = (String) session.getUserProperties().get("username");
+					if (session_manager.remove_user_from_room(room_id, session)) {
+						System.out.println(user + " Left !");
+					}
+				} else {
+					JSONObject res_obj = session_manager.create_response("user not in room");
+
+					session.getBasicRemote().sendText(res_obj.toString());
+					System.out.println(room_id + " user not in room !");
+				}
 			}
 		}
 	}
@@ -182,7 +189,7 @@ class SessionManager {
 		ArrayList<Session> participants = rooms.get(room_id);
 		String user = (String) sess.getUserProperties().get("username");
 
-		//this if is here to handle unexpected closing
+		// this if is here to handle unexpected closing
 		if (participants == null) {
 			System.out.println("Room already closed");
 		} else {
